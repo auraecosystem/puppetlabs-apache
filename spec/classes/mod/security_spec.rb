@@ -493,11 +493,26 @@ describe 'apache::mod::security', type: :class do
             source: 'https://mirror.internal.example/crs/coreruleset-4.27.0-minimal.tar.gz',
             checksum: 'abc123',
             checksum_type: 'sha256',
+            checksum_verify: true,
             extract: true,
             extract_path: '/usr/share',
             creates: '/usr/share/coreruleset-4.27.0/crs-setup.conf.example',
           )
         }
+      end
+
+      context 'with crs_archive_source but no checksum (trusted mirror)' do
+        let(:params) do
+          {
+            crs_source: 'archive',
+            crs_archive_source: 'https://mirror.internal.example/crs/coreruleset-4.27.0-minimal.tar.gz',
+            crs_version: '4.27.0',
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        # No checksum supplied -> verification is disabled (avoids empty-checksum mismatch).
+        it { is_expected.to contain_archive('coreruleset.tar.gz').with_checksum_verify(false) }
 
         it { is_expected.to contain_exec('apache-crs-setup-conf').with_creates('/usr/share/coreruleset-4.27.0/crs-setup.conf') }
 

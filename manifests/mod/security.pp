@@ -305,18 +305,21 @@ class apache::mod::security (
       }
 
       # Both the release "-minimal" asset and the source archive unpack to a
-      # versioned top-level dir, coreruleset-<crs_version>/.
+      # versioned top-level dir, coreruleset-<crs_version>/. Checksum
+      # verification is only enabled when a checksum is supplied (a trusted
+      # internal mirror may legitimately be used without one).
       archive { 'coreruleset.tar.gz':
-        ensure        => present,
-        path          => '/var/cache/coreruleset.tar.gz',
-        source        => $crs_archive_source,
-        checksum      => $crs_archive_checksum,
-        checksum_type => $crs_archive_checksum_type,
-        extract       => true,
-        extract_path  => $_crs_extract_base,
-        creates       => "${_crs_dir}/crs-setup.conf.example",
-        cleanup       => true,
-        require       => File[$_crs_extract_base],
+        ensure          => present,
+        path            => '/var/cache/coreruleset.tar.gz',
+        source          => $crs_archive_source,
+        checksum        => $crs_archive_checksum,
+        checksum_type   => $crs_archive_checksum_type,
+        checksum_verify => $crs_archive_checksum =~ NotUndef,
+        extract         => true,
+        extract_path    => $_crs_extract_base,
+        creates         => "${_crs_dir}/crs-setup.conf.example",
+        cleanup         => true,
+        require         => File[$_crs_extract_base],
       }
 
       # CRS ships crs-setup.conf.example; create the active crs-setup.conf from
