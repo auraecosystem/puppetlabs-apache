@@ -10,7 +10,7 @@ require 'spec_helper_acceptance'
 describe 'apache::mod::security CRS v4', if: (os[:family].include?('redhat') && os[:release].to_i >= 10) do
   before(:all) do
     # The module does not manage the ModSecurity engine on EL10; provide it from EPEL.
-    run_shell('dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm || true')
+    run_shell('rpm -q epel-release || dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm')
     run_shell('dnf install -y mod_security')
 
     # Minimal but valid CRS v4 layout for crs_source => path.

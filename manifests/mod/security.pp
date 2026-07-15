@@ -325,7 +325,7 @@ class apache::mod::security (
       # CRS ships crs-setup.conf.example; create the active crs-setup.conf from
       # it once. The creates guard prevents clobbering later user edits.
       exec { 'apache-crs-setup-conf':
-        command => "/bin/cp ${_crs_dir}/crs-setup.conf.example ${_crs_dir}/crs-setup.conf",
+        command => ['/bin/cp', "${_crs_dir}/crs-setup.conf.example", "${_crs_dir}/crs-setup.conf"],
         creates => "${_crs_dir}/crs-setup.conf",
         require => Archive['coreruleset.tar.gz'],
         notify  => Class['apache::service'],
