@@ -15,6 +15,7 @@
 [Installing arbitrary modules]: #installing-arbitrary-modules
 [Installing specific modules]: #installing-specific-modules
 [Load balancing examples]: #load-balancing-examples
+[Configuring mod_security and the OWASP Core Rule Set]: #configuring-mod_security-and-the-owasp-core-rule-set
 [apache affects]: #what-the-apache-module-affects
 
 [Reference]: #reference
@@ -183,6 +184,7 @@
 [`mod_python`]: http://modpython.org/
 [`mod_rewrite`]: https://httpd.apache.org/docs/current/mod/mod_rewrite.html
 [`mod_security`]: https://www.modsecurity.org/
+[`puppet/archive`]: https://forge.puppet.com/modules/puppet/archive
 [`mod_ssl`]: https://httpd.apache.org/docs/current/mod/mod_ssl.html
 [`mod_status`]: https://httpd.apache.org/docs/current/mod/mod_status.html
 [`mod_version`]: https://httpd.apache.org/docs/current/mod/mod_version.html
@@ -274,6 +276,7 @@
 3. [Usage - The classes and defined types available for configuration][Usage]
     - [Configuring virtual hosts - Examples to help get started][Configuring virtual hosts]
     - [Load balancing with exported and non-exported resources][Load balancing examples]
+    - [Configuring mod_security and the OWASP Core Rule Set][Configuring mod_security and the OWASP Core Rule Set]
 4. [Reference - An under-the-hood peek at what the module is doing and how][Reference]
 5. [Limitations - OS compatibility, etc.][Limitations]
 6. [License][License]
@@ -740,6 +743,62 @@ apache::balancer { 'puppet01':
 ```
 
 Load balancing scheduler algorithms (`lbmethod`) are listed [in mod_proxy_balancer documentation](https://httpd.apache.org/docs/current/mod/mod_proxy_balancer.html).
+
+<a id="configuring-mod_security-and-the-owasp-core-rule-set"></a>
+### Configuring mod_security and the OWASP Core Rule Set
+
+The [`apache::mod::security`][] class configures [`mod_security`][] and, optionally, the OWASP Core Rule Set (CRS) rules that run on top of it. How CRS is obtained is controlled by the `crs_source` parameter:
+
+| `crs_source` | Behavior | Typical use |
+| --- | --- | --- |
+| `package` | Installs `crs_package` (CRS v2/v3) and activates rules via per-rule symlinks. Default on RHEL/CentOS 7, 8, and 9. | Distros where an EPEL/OS `mod_security_crs` package still exists. |
+| `archive` | Downloads a CRS v4 tarball with [`puppet/archive`][] from `crs_archive_source` and wires up the v4 `crs-setup.conf` + `rules/*.conf` includes. | RHEL/CentOS 10 and other platforms with no CRS package, when you can fetch the tarball from the internet or an internal mirror. |
+| `path` | Wires up an already-extracted CRS v4 directory at `crs_path`; nothing is downloaded. | Air-gapped hosts with no reachable download source, where CRS is pre-staged by other means. |
+| `none` | Manages the `mod_security`/`mod_security2` engine only; no CRS rules are installed or activated. Default on RHEL/CentOS 10. | You want the engine without CRS, or you're not yet ready to opt in to CRS on EL10. |
+
+> As of RHEL/CentOS 10, there is no `mod_security_crs` package available (from EPEL or otherwise), so `crs_source` defaults to `none` there. CRS is opt-in via `archive` or `path`. RHEL/CentOS 7/8/9 are unaffected and keep the `package` default.
+
+#### `package` (RHEL/CentOS 7, 8, 9 — default, unchanged)
+
+```puppet
+class { 'apache::mod::security': }
+```
+
+#### `archive` (download a CRS v4 tarball, e.g. from an internal mirror)
+
+`crs_archive_source` and `crs_version` are required. There is no module-shipped default URL or version — you pin both yourself, so upgrading CRS is always an explicit, deliberate action:
+
+```puppet
+class { 'apache::mod::security':
+  crs_source           => 'archive',
+  crs_archive_source   => 'https://mirror.example.com/coreruleset-4.27.0-minimal.tar.gz',
+  crs_version          => '4.27.0',
+  crs_archive_checksum => '<sha256 checksum of the tarball>',
+}
+```
+
+`crs_archive_source` accepts any source [`puppet/archive`][] supports (an `https://` URL, an internal Artifactory/Nexus mirror, or even a local `file://` path), which lets restricted environments point at an internal proxy instead of the public internet. `crs_archive_checksum` is optional — omit it only when the source is already trusted (for example, a controlled internal mirror).
+
+The tarball is expected to unpack to a versioned `coreruleset-<crs_version>/` directory containing `crs-setup.conf.example` and `rules/*.conf`, matching the layout of the [upstream CRS releases](https://github.com/coreruleset/coreruleset/releases). By default it's extracted under `/usr/share`; override the extraction base with `crs_path`.
+
+#### `path` (pre-staged directory, no download — for air-gapped hosts)
+
+```puppet
+class { 'apache::mod::security':
+  crs_source => 'path',
+  crs_path   => '/opt/crs',
+}
+```
+
+`crs_path` must point at a directory that already contains `crs-setup.conf` and `rules/*.conf` (for example, staged there by a separate content-delivery process). The module only wires up the `IncludeOptional` directives — it does not fetch or validate the rule content.
+
+#### `none` (engine only, no CRS — default on RHEL/CentOS 10)
+
+```puppet
+class { 'apache::mod::security':
+  crs_source => 'none',
+}
+```
 
 <a id="reference"></a>
 ## Reference

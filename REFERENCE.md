@@ -6173,8 +6173,11 @@ Installs and configures `mod_security`.
 
 * **Note** On RHEL/EL 10 the ModSecurity engine is provided by EPEL (enable EPEL
 yourself; this module does not manage it). The OWASP CRS package
-(`mod_security_crs`) is not available on EL10, so the class manages the
-engine only there and does not install or activate CRS rules.
+(`mod_security_crs`) is not available on EL10, so `crs_source` defaults to
+`none` (engine only). CRS v4 can be opted into there via `crs_source =>
+'archive'` (downloaded from `crs_archive_source`, e.g. an internal mirror)
+or `crs_source => 'path'` (a pre-staged directory). EL7/8/9 keep the
+package-based default unchanged.
 
 * **See also**
   * https://github.com/SpiderLabs/ModSecurity/wiki
@@ -6189,6 +6192,12 @@ The following parameters are available in the `apache::mod::security` class:
 * [`version`](#-apache--mod--security--version)
 * [`logroot`](#-apache--mod--security--logroot)
 * [`crs_package`](#-apache--mod--security--crs_package)
+* [`crs_source`](#-apache--mod--security--crs_source)
+* [`crs_archive_source`](#-apache--mod--security--crs_archive_source)
+* [`crs_archive_checksum`](#-apache--mod--security--crs_archive_checksum)
+* [`crs_archive_checksum_type`](#-apache--mod--security--crs_archive_checksum_type)
+* [`crs_version`](#-apache--mod--security--crs_version)
+* [`crs_path`](#-apache--mod--security--crs_path)
 * [`activated_rules`](#-apache--mod--security--activated_rules)
 * [`custom_rules`](#-apache--mod--security--custom_rules)
 * [`custom_rules_set`](#-apache--mod--security--custom_rules_set)
@@ -6249,9 +6258,65 @@ Default value: `$apache::params::logroot`
 
 Data type: `Optional[String]`
 
-Name of package that installs CRS rules.
+Name of package that installs CRS rules. Only used when `crs_source` is `package`.
 
 Default value: `$apache::params::modsec_crs_package`
+
+##### <a name="-apache--mod--security--crs_source"></a>`crs_source`
+
+Data type: `Enum['package', 'archive', 'path', 'none']`
+
+How the OWASP Core Rule Set is obtained:
+* `package` - install `crs_package` and activate rules via per-rule symlinks (v2/v3 layout). Default on EL7/8/9.
+* `archive` - download the CRS v4 tarball via `puppet/archive` from `crs_archive_source` (e.g. an internal mirror) and wire the v4 includes.
+* `path`    - use a pre-staged CRS v4 directory given by `crs_path` (no download); only wires the v4 includes.
+* `none`    - engine only, no CRS managed. Default on EL10.
+
+Default value: `$apache::params::modsec_crs_source`
+
+##### <a name="-apache--mod--security--crs_archive_source"></a>`crs_archive_source`
+
+Data type: `Optional[String[1]]`
+
+Source URL or path for the CRS v4 tarball when `crs_source` is `archive`. No module default
+(user-pinned, e.g. an internal mirror) to avoid a version/CVE maintenance treadmill. Required for `archive`.
+
+Default value: `$apache::params::modsec_crs_archive_source`
+
+##### <a name="-apache--mod--security--crs_archive_checksum"></a>`crs_archive_checksum`
+
+Data type: `Optional[String[1]]`
+
+Checksum of the CRS v4 tarball for verification when `crs_source` is `archive`.
+
+Default value: `$apache::params::modsec_crs_archive_checksum`
+
+##### <a name="-apache--mod--security--crs_archive_checksum_type"></a>`crs_archive_checksum_type`
+
+Data type: `String[1]`
+
+Checksum algorithm for `crs_archive_checksum` (e.g. `sha256`).
+
+Default value: `$apache::params::modsec_crs_archive_checksum_type`
+
+##### <a name="-apache--mod--security--crs_version"></a>`crs_version`
+
+Data type: `Optional[String[1]]`
+
+The pinned CRS version (e.g. `4.27.0`), required for `crs_source => archive`. It fixes the
+extracted `coreruleset-<version>` directory name so the include paths are deterministic.
+
+Default value: `undef`
+
+##### <a name="-apache--mod--security--crs_path"></a>`crs_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+For `crs_source => path`: absolute path to the pre-staged CRS v4 directory (contains
+`crs-setup.conf` and `rules/`). For `crs_source => archive`: overrides the extraction base
+directory (default `/usr/share`); the ruleset then lives at `<crs_path>/coreruleset-<crs_version>`.
+
+Default value: `undef`
 
 ##### <a name="-apache--mod--security--activated_rules"></a>`activated_rules`
 
