@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## [v13.2.0](https://github.com/puppetlabs/puppetlabs-apache/tree/v13.2.0) - 2026-06-28
+## [v13.3.0](https://github.com/puppetlabs/puppetlabs-apache/tree/v13.3.0) - 2026-07-20
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-apache/compare/v13.2.0...v13.3.0)
+
+### Added
+
+- (MODULES-11857) Scaffold OWASP CRS v4 support on EL10 via crs_source enum [#2637](https://github.com/puppetlabs/puppetlabs-apache/pull/2637) ([SugatD](https://github.com/SugatD))
+
+## [v13.2.0](https://github.com/puppetlabs/puppetlabs-apache/tree/v13.2.0) - 2026-06-29
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-apache/compare/v13.1.0...v13.2.0)
 
@@ -631,7 +639,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Fixed
 
-- (MODULES-10712) Fix mod_ldap on RH/CentOS 5 and 6 [#2041](https://github.com/puppetlabs/puppetlabs-apache/pull/2041) ([h-haaks](https://github.com/h-haaks))
 - Update mod_dir, alias_icons_path, error_documents_path for CentOS 8 [#2038](https://github.com/puppetlabs/puppetlabs-apache/pull/2038) ([initrd](https://github.com/initrd))
 - Ensure switching of thread module works on Debian 10 / Ubuntu 20.04 [#2034](https://github.com/puppetlabs/puppetlabs-apache/pull/2034) ([tuxmea](https://github.com/tuxmea))
 - MODULES-10586 Centos 8: wrong package used to install mod_authnz_ldap [#2021](https://github.com/puppetlabs/puppetlabs-apache/pull/2021) ([farebers](https://github.com/farebers))
@@ -738,7 +745,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - (MODULES-8731) Allow CIDRs for proxy_ips/internal_proxy in remoteip [#1891](https://github.com/puppetlabs/puppetlabs-apache/pull/1891) ([JAORMX](https://github.com/JAORMX))
 - Manage all mod_remoteip parameters supported by Apache [#1882](https://github.com/puppetlabs/puppetlabs-apache/pull/1882) ([johanfleury](https://github.com/johanfleury))
 - MODULES-8541 : Allow HostnameLookups to be modified [#1881](https://github.com/puppetlabs/puppetlabs-apache/pull/1881) ([k2patel](https://github.com/k2patel))
-- Add support for mod_http2 [#1867](https://github.com/puppetlabs/puppetlabs-apache/pull/1867) ([smortex](https://github.com/smortex))
 - Added code to paramertize the libphp prefix [#1852](https://github.com/puppetlabs/puppetlabs-apache/pull/1852) ([grahamuk2018](https://github.com/grahamuk2018))
 - Added WSGI Options WSGIApplicationGroup and WSGIPythonOptimize [#1847](https://github.com/puppetlabs/puppetlabs-apache/pull/1847) ([emetriqLikedeeler](https://github.com/emetriqLikedeeler))
 
@@ -1039,7 +1045,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - mod_event: do not set parameters twice [#1445](https://github.com/puppetlabs/puppetlabs-apache/pull/1445) ([timogoebel](https://github.com/timogoebel))
 - setting options-hash in proxy_pass or proxy_match leads to syntax errors in Apache [#1444](https://github.com/puppetlabs/puppetlabs-apache/pull/1444) ([zivis](https://github.com/zivis))
 - Fixed trailing slash in lib_path on Suse [#1429](https://github.com/puppetlabs/puppetlabs-apache/pull/1429) ([OpenCoreCH](https://github.com/OpenCoreCH))
-- Add simple <Limit> support + ProxyAddHeaders [#1427](https://github.com/puppetlabs/puppetlabs-apache/pull/1427) ([costela](https://github.com/costela))
 
 ## [1.9.0](https://github.com/puppetlabs/puppetlabs-apache/tree/1.9.0) - 2016-04-21
 
@@ -1105,7 +1110,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 
 - allow status code on redirect match to be optional and not a requirement [#1355](https://github.com/puppetlabs/puppetlabs-apache/pull/1355) ([BigAl](https://github.com/BigAl))
-- Ldap parameters [#1352](https://github.com/puppetlabs/puppetlabs-apache/pull/1352) ([tphoney](https://github.com/tphoney))
 - Add apache_version fact [#1347](https://github.com/puppetlabs/puppetlabs-apache/pull/1347) ([jyaworski](https://github.com/jyaworski))
 - (FM-4049) update to modulesync_configs [#1343](https://github.com/puppetlabs/puppetlabs-apache/pull/1343) ([DavidS](https://github.com/DavidS))
 - Specify owning permissions for logroot directory [#1340](https://github.com/puppetlabs/puppetlabs-apache/pull/1340) ([SlavaValAl](https://github.com/SlavaValAl))
@@ -1116,7 +1120,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - Fix in custom fact "apache_version" for RHEL. [#1360](https://github.com/puppetlabs/puppetlabs-apache/pull/1360) ([BobVincentatNCRdotcom](https://github.com/BobVincentatNCRdotcom))
 - Fix passenger on redhat systems [#1354](https://github.com/puppetlabs/puppetlabs-apache/pull/1354) ([hunner](https://github.com/hunner))
-- ThreadLimit needs to be above MaxClients or it is ignored. https://bz… [#1351](https://github.com/puppetlabs/puppetlabs-apache/pull/1351) ([tphoney](https://github.com/tphoney))
 - Bugfix: require concat, not file [#1350](https://github.com/puppetlabs/puppetlabs-apache/pull/1350) ([BobVincentatNCRdotcom](https://github.com/BobVincentatNCRdotcom))
 - (MODULES-3018) Fixes apache to work correctly with concat. [#1348](https://github.com/puppetlabs/puppetlabs-apache/pull/1348) ([bmjen](https://github.com/bmjen))
 - Fix fcgid.conf on Debian [#1331](https://github.com/puppetlabs/puppetlabs-apache/pull/1331) ([sathieu](https://github.com/sathieu))
@@ -1208,7 +1211,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Adding use_optional_includes parameter to vhost define. [#1162](https://github.com/puppetlabs/puppetlabs-apache/pull/1162) ([cropalato](https://github.com/cropalato))
 - Add support for user modifiable installation of mod_systemd and pidfile locations: [#1159](https://github.com/puppetlabs/puppetlabs-apache/pull/1159) ([vamegh](https://github.com/vamegh))
 - mod_passenger: Allow setting PassengerSpawnMethod [#1158](https://github.com/puppetlabs/puppetlabs-apache/pull/1158) ([wubr](https://github.com/wubr))
-- Feature/master/passengerbaseuri [#1152](https://github.com/puppetlabs/puppetlabs-apache/pull/1152) ([aronymous](https://github.com/aronymous))
 
 ### Fixed
 
@@ -1465,7 +1467,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Revert "strict_variables fix" -- accidentally merged onto 1.1.x [#847](https://github.com/puppetlabs/puppetlabs-apache/pull/847) ([igalic](https://github.com/igalic))
 - Fix issue with puppet_module_install, removed and using updated method f... [#846](https://github.com/puppetlabs/puppetlabs-apache/pull/846) ([cyberious](https://github.com/cyberious))
 - Fix formatting of sethandler description [#842](https://github.com/puppetlabs/puppetlabs-apache/pull/842) ([antaflos](https://github.com/antaflos))
-- Fix some Puppet Lint errors [#840](https://github.com/puppetlabs/puppetlabs-apache/pull/840) ([baurmatt](https://github.com/baurmatt))
 - Ensure that mod packages are installed before conf [#837](https://github.com/puppetlabs/puppetlabs-apache/pull/837) ([bodepd](https://github.com/bodepd))
 - Add defined type for handling custom configs [#836](https://github.com/puppetlabs/puppetlabs-apache/pull/836) ([underscorgan](https://github.com/underscorgan))
 - Typefix [#828](https://github.com/puppetlabs/puppetlabs-apache/pull/828) ([setola](https://github.com/setola))
@@ -1509,7 +1510,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - add docroot_mode parameter to vhost [#697](https://github.com/puppetlabs/puppetlabs-apache/pull/697) ([ckaenzig](https://github.com/ckaenzig))
 - Added support for SVN authentication (mod_authz_svn) [#696](https://github.com/puppetlabs/puppetlabs-apache/pull/696) ([baurmatt](https://github.com/baurmatt))
 - Added WSGIPassAuthorization option to vhost. [#694](https://github.com/puppetlabs/puppetlabs-apache/pull/694) ([Conzar](https://github.com/Conzar))
-- Allow Apache service not to be managed by Puppet [#690](https://github.com/puppetlabs/puppetlabs-apache/pull/690) ([arnoudj](https://github.com/arnoudj))
 - ssl tweaks [#688](https://github.com/puppetlabs/puppetlabs-apache/pull/688) ([sdague](https://github.com/sdague))
 - Enable overriding mod-level parameters for apache::mod::passenger [#687](https://github.com/puppetlabs/puppetlabs-apache/pull/687) ([jonoterc](https://github.com/jonoterc))
 - Add extra parameters to mod::php [#684](https://github.com/puppetlabs/puppetlabs-apache/pull/684) ([nbeernink](https://github.com/nbeernink))
